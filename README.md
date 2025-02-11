@@ -42,12 +42,12 @@ La aplicación permite a los usuarios ver cómo una función se optimiza mediant
 1. Clona este repositorio:
 
   ```bash
-  git clone https://github.com/tu-usuario/gradient-descent-simulator.git
+  git clone https://github.com/gduran28/gradient-descent-sim.git
   ```
 2. Instala las dependencias:
    
   ```bash
-  cd gradient-descent-simulator
+  cd gradient-descent-sim
   bun install
   ```
 3. Ejecuta la aplicación:
@@ -60,4 +60,5 @@ La aplicación permite a los usuarios ver cómo una función se optimiza mediant
 ## Tecnologías Usadas
 - React: Biblioteca para construir la interfaz de usuario.
 - mathjs: Librería de matemáticas para la evaluación de expresiones algebraicas y cálculo de derivadas.
-- TypeScript: Lenguaje de programación para mejorar la calidad del código con tipado estático
+- TypeScript: Lenguaje de programación para mejorar la calidad del código con tipado estático.
+- TailwindCSS: Libreria de estilos.
