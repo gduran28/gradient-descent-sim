@@ -35,6 +35,7 @@ const GradientDescentSim: React.FC = () => {
   const [alpha, setAlpha] = useState<number>(0.1);
   const [iterations, setIterations] = useState<number>(1);
   const [results, setResults] = useState<Point[]>([{}]);
+  const [initialPointInput, setInitialPointInput] = useState<string>(`(${Object.values(initialPoint).join(", ")})`);
 
   useEffect(() => {
     const detectedVariables = new Set(func.match(/[a-zA-Z]+/g) || []);
@@ -42,11 +43,30 @@ const GradientDescentSim: React.FC = () => {
     setVariables([...detectedVariables]);
   }, [func]);
 
+  useEffect(() => {
+    setInitialPointInput(`(${Object.values(initialPoint).join(", ")})`);
+  }, [initialPoint]);
+
   const handlePointChange = (value: string) => {
     const newPoint = value.match(/-?\d+(\.\d+)?/g) || [];
     const newPointObj: Point = Object.fromEntries(variables.map((v, i) => [v, parseFloat(newPoint[i] || "0")]));
 
     setInitialPoint(newPointObj);
+  }
+
+  const handlePointInputChange = (value: string) => {
+    setInitialPointInput(value);
+  }
+
+  const handleBlur = () => {
+    handlePointChange(initialPointInput);
+    setInitialPoint((prevPoint) => {
+      const formattedPoint: Point = {};
+      Object.keys(prevPoint).forEach((key) => {
+        formattedPoint[key] = parseFloat(prevPoint[key].toFixed(4));
+      });
+      return formattedPoint;
+    });
   }
 
   const runGradientDescent = () => {
@@ -57,7 +77,9 @@ const GradientDescentSim: React.FC = () => {
     console.log("Iterations:", iterations);
     console.log("Function:", func);
     console.log("Variables:", variables);
-
+    if(!initialPoint.x || !initialPoint.y || !alpha || !iterations || !func || !variables) {
+      return;
+    }
     let res = { ...initialPoint };
     let newResults = [];
 
@@ -70,7 +92,7 @@ const GradientDescentSim: React.FC = () => {
           const gradExpr = derivatives[i].toString();
           const gradValue = evaluate(gradExpr, res);
           console.log("punto", res);
-          console.log(`Derivada respecto a ${varName}:`, gradValue);
+          console.log(`gradiente respecto a ${varName}:`, gradValue);
           return gradValue;
         } catch (error) {
           console.error(`Error al calcular la derivada respecto a ${varName}:`, error);
@@ -117,8 +139,9 @@ const GradientDescentSim: React.FC = () => {
           <input
             id="initialPoint"
             type="text"
-            value={`(${Object.values(initialPoint).join(", ")})`}
-            onChange={(e) => handlePointChange(e.target.value)}
+            value={initialPointInput}
+            onChange={(e) => handlePointInputChange(e.target.value)}
+            onBlur={handleBlur}
             className="w-full px-3 py-2 bg-gray-800 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
         </div>
